@@ -8,11 +8,16 @@
     "vite:dev": "vite",
     "server:dev": "cd server && npm run start:dev",
     "build": "tsc -b && vite build",
+    "build:dev": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "cd server && npm i",
+    "start:dev": "npm run build:dev && npm run server:dev"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.12",
+    "classnames": "^2.5.1",
+    "date-fns": "^4.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
