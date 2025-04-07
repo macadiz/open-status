@@ -16,19 +16,21 @@ export const IncidentsScene = () => {
       <ul className="mt-4 flex flex-col gap-2">
         {incidents.map((incident) => {
           return (
-            <Card>
-              <div className="flex flex-col">
-                <span className="flex gap-2 items-center">
-                  <h3 className="text-lg font-bold">{incident.title}</h3>
-                  <StatusTag
-                    level={INCIDENT_LEVEL_STATUS_TAG[incident.level]}
-                  />
-                </span>
-                <span className="text-gray-500">
-                  {format(incident.date, "MMM, dd yyyy hh:mm aa")}
-                </span>
-              </div>
-            </Card>
+            <li>
+              <Card>
+                <div className="flex flex-col">
+                  <span className="flex gap-2 items-center">
+                    <h3 className="text-lg font-bold">{incident.title}</h3>
+                    <StatusTag
+                      level={INCIDENT_LEVEL_STATUS_TAG[incident.level]}
+                    />
+                  </span>
+                  <span className="text-gray-500">
+                    {format(incident.date, "MMM, dd yyyy hh:mm aa")}
+                  </span>
+                </div>
+              </Card>
+            </li>
           );
         })}
       </ul>

@@ -15,7 +15,7 @@ export const Tabs = (props: TabsProps) => {
       <ul className="flex gap-4 border border-gray-300 rounded-full p-2">
         {props.tabsList.map((tab) => {
           const classes = classNames({
-            "border border-gray-300 dark:bg-black rounded-full p-2 grow text-center cursor-pointer":
+            "border border-gray-300 dark:bg-gray-800 rounded-full p-2 grow text-center cursor-pointer":
               true,
             "!bg-gray-200 dark:text-black": tab.title === selectedTab?.title,
           });
@@ -32,7 +32,7 @@ export const Tabs = (props: TabsProps) => {
       </ul>
       {selectedTab && (
         <section className="mt-4">
-          <Card>{selectedTab.content}</Card>
+          <Card spacing="lg">{selectedTab.content}</Card>
         </section>
       )}
     </article>

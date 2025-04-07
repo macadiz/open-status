@@ -1,0 +1,21 @@
+meta {
+  name: Create API
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/services/api
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "alias": "self",
+    "checkInterval": 30,
+    "uptimeThreshold": 90,
+    "url": "http://localhost:3000/api/health",
+    "method": "GET"
+  }
+}

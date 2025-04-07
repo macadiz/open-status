@@ -3,7 +3,6 @@ import { useGlobal } from "../../../context/Global";
 import { StatusTag } from "../../shared/status-tag";
 import { format } from "date-fns";
 import { Card } from "../../shared/card";
-import { Tabs } from "../../shared/tabs";
 import { IncidentsScene } from "../../scenes/incidents";
 
 export const MainPage = () => {
@@ -51,22 +50,11 @@ export const MainPage = () => {
           </div>
         </section>
       </Card>
-      <Tabs
-        tabsList={[
-          {
-            title: "Incidents",
-            content: <IncidentsScene />,
-          },
-          {
-            title: "Uptime",
-            content: <>Chao mundo</>,
-          },
-          {
-            title: "Subscribe",
-            content: <>12345</>,
-          },
-        ]}
-      ></Tabs>
+      <section className="mt-4">
+        <Card spacing="lg">
+          <IncidentsScene />
+        </Card>
+      </section>
     </GlobalLayout>
   );
 };

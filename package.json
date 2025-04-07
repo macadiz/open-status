@@ -12,12 +12,17 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "postinstall": "cd server && npm i",
+    "db-migrate:dev": "cd server && dotenv -e ../.env -- npx prisma migrate dev",
+    "db-migrate": "cd server && npx prisma migrate deploy",
     "start:dev": "npm run build:dev && npm run server:dev"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.12",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
+    "dotenv-cli": "^8.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",

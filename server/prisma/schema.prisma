@@ -1,0 +1,101 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  id              String  @id @default(uuid())
+  alias           String
+  serviceConfigId String?
+
+  serviceLog    ServiceLog[]
+  serviceConfig ServiceConfig?
+
+  @@map("service")
+}
+
+model ServiceConfig {
+  id              String       @id @default(uuid())
+  serviceId       String       @unique @map("service_id")
+  uptimeThreshold Int
+  checkInterval   Int
+  type            ServiceTypes
+
+  service   Service    @relation(fields: [serviceId], references: [id])
+  apiConfig ApiConfig?
+
+  @@map("service_config")
+}
+
+model ApiConfig {
+  id               String         @id @default(uuid())
+  serviceConfigId  String         @unique @map("service_config_id")
+  url              String
+  method           String
+  body             Json?
+  responseType     ResponseTypes? @map("response_type")
+  expectedResponse String?
+
+  params        ApiConfigParam[]
+  serviceConfig ServiceConfig    @relation(fields: [serviceConfigId], references: [id])
+
+  @@map("api_config")
+}
+
+model ApiConfigParam {
+  id          String        @id @default(uuid())
+  key         String
+  value       String
+  apiConfigId String?       @map("api_config_id")
+  type        APIParamTypes
+
+  apiConfig ApiConfig? @relation(fields: [apiConfigId], references: [id])
+
+  @@map("api_config_param")
+}
+
+model ServiceLog {
+  id          String   @id @default(uuid())
+  serviceId   String   @map("service_id")
+  date        DateTime
+  isAvailable Boolean  @map("is_available")
+  message     String?
+
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@map("service_log")
+}
+
+model Incident {
+  id      String   @id @default(uuid())
+  title   String
+  details String
+  date    DateTime
+
+  @@map("incident")
+}
+
+enum ServiceTypes {
+  API
+}
+
+enum APIParamTypes {
+  Header
+  Query
+}
+
+enum ResponseTypes {
+  Document
+  JSON
+  XML
+}

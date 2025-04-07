@@ -21,7 +21,7 @@ export const Switch = (props: SwitchProps) => {
   };
 
   return (
-    <label className="flex gap-2">
+    <label className="flex gap-2 cursor-pointer">
       <span>{props.label}</span>
       <div className={classes}></div>
       <input
