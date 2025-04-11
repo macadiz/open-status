@@ -1,7 +1,7 @@
 meta {
-  name: Create API
+  name: Get Services Summary
   type: http
-  seq: 2
+  seq: 3
 }
 
 post {
@@ -14,8 +14,7 @@ body:json {
   {
     "alias": "google",
     "checkInterval": 30,
-    "warningThreshold": 85,
-    "dangerThreshold": 90,
+    "uptimeThreshold": 90,
     "url": "https://www.google.cl",
     "method": "GET"
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { APIParamTypes, Prisma, ServiceTypes } from '@prisma/client';
+import { APIParamTypes, IOTypes, Prisma, ServiceTypes } from '@prisma/client';
 import { PrismaService } from 'src/infra/database/prisma.service';
 
 @Injectable()
@@ -9,12 +9,16 @@ export class ServicesRepository {
   async addAPIService(
     alias: string,
     checkInterval: number,
-    uptimeThreshold: number,
+    warningThreshold: number,
+    dangerThreshold: number,
     url: string,
     method: string,
     queryParams?: Record<string, string>,
     headers?: Record<string, string>,
     body?: string,
+    bodyType?: IOTypes,
+    expectedResponse?: string,
+    responseType?: IOTypes,
   ) {
     return await this.prismaService.$transaction(async (client) => {
       const service = await client.service.create({
@@ -27,7 +31,8 @@ export class ServicesRepository {
         data: {
           checkInterval,
           type: ServiceTypes.API,
-          uptimeThreshold,
+          warningThreshold,
+          dangerThreshold,
           service: {
             connect: {
               id: service.id,
@@ -46,6 +51,9 @@ export class ServicesRepository {
             },
           },
           body,
+          bodyType,
+          responseType,
+          expectedResponse,
         },
       });
 
@@ -133,5 +141,44 @@ export class ServicesRepository {
         },
       },
     });
+  }
+
+  async getAllServicesUptime(startDate: Date, endDate: Date) {
+    const allServicesLogs = await this.prismaService.service.findMany({
+      include: {
+        serviceConfig: true,
+        serviceLog: {
+          where: {
+            date: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+          orderBy: {
+            date: 'desc',
+          },
+        },
+      },
+    });
+
+    const serviceWithUptimes = allServicesLogs
+      .filter((service) => service.serviceLog.length)
+      .map((service) => {
+        const logs = service.serviceLog;
+
+        const healthyLogs = logs.filter((log) => log.isAvailable);
+
+        return {
+          ...service,
+          serviceLog: undefined,
+          serviceConfig: undefined,
+          warningThreshold: service.serviceConfig!.warningThreshold,
+          dangerThreshold: service.serviceConfig!.dangerThreshold,
+          uptime: logs.length ? (healthyLogs.length / logs.length) * 100 : 0,
+          lastEventDate: service.serviceLog[0].date,
+        };
+      });
+
+    return serviceWithUptimes;
   }
 }

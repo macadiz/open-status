@@ -6,7 +6,7 @@ import { Card } from "../../shared/card";
 import { IncidentsScene } from "../../scenes/incidents";
 
 export const MainPage = () => {
-  const { generalStatus, detailedStatuses } = useGlobal();
+  const { generalStatus } = useGlobal();
 
   return (
     <GlobalLayout>
@@ -17,31 +17,34 @@ export const MainPage = () => {
               <span className="grow flex gap-2">
                 <h2 className="text-2xl font-bold">Current status</h2>
               </span>
-              <StatusTag status={generalStatus} showMessage />
+              <StatusTag level={generalStatus.status} showMessage />
             </div>
             <span className="text-gray-500">
               Last updated:{" "}
-              {format(generalStatus.lastUpdated, "MMM, dd yyyy hh:mm aa")}
+              {generalStatus.lastUpdated
+                ? format(generalStatus.lastUpdated, "MMM, dd yyyy hh:mm aa")
+                : "No updates"}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {detailedStatuses.map((detailedStatus) => {
+            {generalStatus.uptime.map((detailedStatus) => {
               return (
                 <Card
                   key={
-                    detailedStatus.name + detailedStatus.lastUpdated.toISOString
+                    detailedStatus.alias +
+                    detailedStatus.lastEventDate.toISOString
                   }
                 >
                   <section className="flex flex-col gap-2">
                     <div className="flex gap-2">
                       <h3 className="font-bold text-lg grow">
-                        {detailedStatus.name}
+                        {detailedStatus.alias}
                       </h3>
-                      <StatusTag status={detailedStatus} />
+                      <StatusTag level={detailedStatus.status} />
                     </div>
                     <div className="flex gap-2">
                       <h3 className="text-gray-500 text-lg grow">Uptime</h3>
-                      <span>{detailedStatus.uptime}%</span>
+                      <span>{detailedStatus.uptime.toFixed(2)}%</span>
                     </div>
                   </section>
                 </Card>

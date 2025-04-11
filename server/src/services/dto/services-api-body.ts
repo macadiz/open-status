@@ -1,3 +1,4 @@
+import { IOTypes } from '@prisma/client';
 import { Method } from 'axios';
 import { IsNumber, IsObject, IsOptional, IsString } from 'class-validator';
 
@@ -7,7 +8,9 @@ export class ServiceAPIBodyDTO {
   @IsNumber()
   checkInterval: number;
   @IsNumber()
-  uptimeThreshold: number;
+  dangerThreshold: number;
+  @IsNumber()
+  warningThreshold: number;
   @IsString()
   url: string;
   @IsString()
@@ -21,4 +24,13 @@ export class ServiceAPIBodyDTO {
   @IsString()
   @IsOptional()
   body?: string;
+  @IsString()
+  @IsOptional()
+  bodyType?: IOTypes;
+  @IsString()
+  @IsOptional()
+  expectedResponse?: string;
+  @IsString()
+  @IsOptional()
+  responseType?: IOTypes;
 }

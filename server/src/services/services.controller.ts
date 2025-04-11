@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { ServiceAPIBodyDTO } from './dto/services-api-body';
+import { SummaryQueryDTO } from './dto/summary-query';
 
 @Controller('services')
 export class ServicesController {
@@ -16,12 +17,24 @@ export class ServicesController {
     return this.servicesService.addAPIService(
       body.alias,
       body.checkInterval,
-      body.uptimeThreshold,
+      body.warningThreshold,
+      body.dangerThreshold,
       body.url,
       body.method,
       body.queryParams,
       body.headers,
       body.body,
+      body.bodyType,
+      body.expectedResponse,
+      body.responseType,
+    );
+  }
+
+  @Get('/summary')
+  async getServicesSummary(@Query() summaryQuery: SummaryQueryDTO) {
+    return this.servicesService.getServicesSummary(
+      summaryQuery.startDate,
+      summaryQuery.endDate,
     );
   }
 }

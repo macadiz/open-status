@@ -1,35 +1,56 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState } from "react";
 import {
-  DEFAULT_GLOBAL_STATE,
-  DETAILED_STATUSES_MOCK,
-  INCIDENTS_MOCK,
-  STATUS_MOCK,
-} from "./constants";
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { DEFAULT_GLOBAL_STATE, INCIDENTS_MOCK, STATUS_MOCK } from "./constants";
 import { GlobalContextoProviderProps } from "./types";
+import { add } from "date-fns";
 
 export const GlobalContext = createContext(DEFAULT_GLOBAL_STATE);
 
+const solveColorScheme = (setModeFunction: VoidFunction) => {
+  if (!localStorage.getItem("dark")) {
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      setModeFunction();
+    }
+  } else {
+    if (localStorage.getItem("dark") === "true") {
+      setModeFunction();
+    }
+  }
+};
+
 export const GlobalContextProvider = (props: GlobalContextoProviderProps) => {
-  const [generalStatus] = useState(STATUS_MOCK);
-  const [detailedStatuses] = useState(DETAILED_STATUSES_MOCK);
+  const [generalStatus, setGeneralStatus] = useState(STATUS_MOCK);
   const [incidents] = useState(INCIDENTS_MOCK);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    if (!localStorage.getItem("dark")) {
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        setIsDarkMode(true);
-      }
-    } else {
-      if (localStorage.getItem("dark") === "true") {
-        setIsDarkMode(true);
-      }
-    }
+  const fetchGeneralStatus = useCallback(() => {
+    const now = new Date();
+    const oneWeekBack = add(now, { weeks: -1 });
+
+    fetch(
+      `/api/services/summary?startDate=${oneWeekBack.toISOString()}&endDate=${now.toISOString()}`
+    ).then((response) => {
+      response.json().then((data) => {
+        setGeneralStatus(data);
+      });
+    });
   }, []);
+
+  useEffect(() => {
+    solveColorScheme(() => {
+      setDarkMode(true);
+    });
+    fetchGeneralStatus();
+  }, [fetchGeneralStatus]);
 
   useEffect(() => {
     if (isDarkMode) {
@@ -49,7 +70,6 @@ export const GlobalContextProvider = (props: GlobalContextoProviderProps) => {
     <GlobalContext.Provider
       value={{
         generalStatus,
-        detailedStatuses,
         isDarkMode,
         setDarkMode,
         incidents,

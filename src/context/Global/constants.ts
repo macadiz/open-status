@@ -1,60 +1,32 @@
-import {
-  DetailedStatus,
-  GeneralStatus,
-  GlobalContextState,
-  Incident,
-} from "./types";
+import { GeneralStatus, GlobalContextState, Incident } from "./types";
 
-export const STATUS_MOCK: GeneralStatus = {
-  level: "success",
-  message: "Everything is ok",
-  lastUpdated: new Date(),
+export const STATUS_DATA = {
+  uptime: [
+    {
+      id: "a37923d3-f8d1-4db3-800f-3e63f9b7a373",
+      alias: "self",
+      warningThreshold: 95,
+      dangerThreshold: 90,
+      uptime: 100,
+      status: "success",
+    },
+    {
+      id: "ef1fb180-9ebf-48f3-a014-6335e1e0fe3c",
+      alias: "google",
+      warningThreshold: 95,
+      dangerThreshold: 90,
+      uptime: 93.89671361502347,
+      status: "warning",
+    },
+  ],
+  generalStatus: "warning",
 };
 
-export const DETAILED_STATUSES_MOCK: DetailedStatus[] = [
-  {
-    name: "API",
-    level: "success",
-    message: "Everything is ok",
-    lastUpdated: new Date(),
-    uptime: 99.9,
-  },
-  {
-    name: "Web App",
-    level: "success",
-    message: "Everything is ok",
-    lastUpdated: new Date(),
-    uptime: 99.9,
-  },
-  {
-    name: "Database",
-    level: "success",
-    message: "Everything is ok",
-    lastUpdated: new Date(),
-    uptime: 99.9,
-  },
-  {
-    name: "Auth",
-    level: "info",
-    message: "Everything is ok",
-    lastUpdated: new Date(),
-    uptime: 99.9,
-  },
-  {
-    name: "Storage",
-    level: "warning",
-    message: "Everything is ok",
-    lastUpdated: new Date(),
-    uptime: 99.9,
-  },
-  {
-    name: "CDN",
-    level: "danger",
-    message: "Everything is ok",
-    lastUpdated: new Date(),
-    uptime: 99.9,
-  },
-];
+export const STATUS_MOCK: GeneralStatus = {
+  status: "success",
+  uptime: [],
+  lastUpdated: new Date(),
+};
 
 export const INCIDENTS_MOCK: Incident[] = [
   {
@@ -73,7 +45,6 @@ export const INCIDENTS_MOCK: Incident[] = [
 
 export const DEFAULT_GLOBAL_STATE: GlobalContextState = {
   generalStatus: STATUS_MOCK,
-  detailedStatuses: DETAILED_STATUSES_MOCK,
   isDarkMode: false,
   setDarkMode: () => {},
   incidents: INCIDENTS_MOCK,

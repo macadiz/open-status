@@ -11,7 +11,7 @@ export const GlobalLayout = (props: PropsWithChildren) => {
         <div className="flex gap-4 items-center grow">
           <h1 className="text-3xl font-bold">System status</h1>
           <div className="flex gap-2">
-            <StatusTag status={generalStatus} />
+            <StatusTag level={generalStatus.status} />
           </div>
         </div>
         <Switch label="Dark mode" on={isDarkMode} onChange={setDarkMode} />

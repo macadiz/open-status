@@ -8,20 +8,20 @@ import {
 import axios, { AxiosError, Method } from 'axios';
 import { ServicesService } from './services.service';
 import { JsonValue } from '@prisma/client/runtime/library';
-import { ResponseTypes } from '@prisma/client';
+import { IOTypes } from '@prisma/client';
 
 export interface ServiceConfig {
   id: string;
   alias: string;
   checkInterval: number;
-  uptimeThreshold: number;
   url: string;
   method: Method;
   queryParams?: Record<string, string>;
   headers?: Record<string, string>;
   body?: string | JsonValue;
+  bodyType?: IOTypes | null;
   expectedResponse?: string | null;
-  responseType?: ResponseTypes | null;
+  responseType?: IOTypes | null;
 }
 
 @Injectable()
@@ -94,12 +94,15 @@ export class ServicesMonitorService implements OnModuleInit, OnModuleDestroy {
 
   checkServiceStatus(service: ServiceConfig) {
     console.log(`Checking status of ${service.alias}`);
+
+    const headers = this.buildAdditionalHeaders(service);
+
     axios({
       url: service.url,
       method: service.method,
       params: service.queryParams,
       data: service.body,
-      headers: service.headers,
+      headers,
       transformResponse: (r) => r as string,
     })
       .then(async (response) => {
@@ -131,6 +134,21 @@ export class ServicesMonitorService implements OnModuleInit, OnModuleDestroy {
           JSON.stringify(axiosError.response?.data),
         );
       });
+  }
+
+  buildAdditionalHeaders(service: ServiceConfig) {
+    const additionalHeaders: Record<string, string> = !service.headers
+      ? {}
+      : { ...service.headers };
+    if (service.body && service.bodyType) {
+      if (service.bodyType === 'XML') {
+        additionalHeaders['Content-Type'] = 'text/xml';
+      }
+    }
+
+    return Object.keys(additionalHeaders).length > 0
+      ? additionalHeaders
+      : undefined;
   }
 
   checkExpectedResponse(responseData?: any, expectedResponse?: string | null) {
@@ -166,7 +184,7 @@ export class ServicesMonitorService implements OnModuleInit, OnModuleDestroy {
     );
   }
 
-  checkResponseType(responseData?: any, responseType?: ResponseTypes | null) {
+  checkResponseType(responseData?: any, responseType?: IOTypes | null) {
     if (!responseType || !responseData) {
       return true;
     }
