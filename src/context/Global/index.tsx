@@ -8,7 +8,6 @@ import {
 } from "react";
 import { DEFAULT_GLOBAL_STATE, INCIDENTS_MOCK, STATUS_MOCK } from "./constants";
 import { GlobalContextoProviderProps } from "./types";
-import { add } from "date-fns";
 
 export const GlobalContext = createContext(DEFAULT_GLOBAL_STATE);
 
@@ -29,26 +28,30 @@ const solveColorScheme = (setModeFunction: VoidFunction) => {
 
 export const GlobalContextProvider = (props: GlobalContextoProviderProps) => {
   const [generalStatus, setGeneralStatus] = useState(STATUS_MOCK);
+  const [startDate, setStartDate] = useState(DEFAULT_GLOBAL_STATE.startDate);
+  const [endDate, setEndDate] = useState(DEFAULT_GLOBAL_STATE.endDate);
   const [incidents] = useState(INCIDENTS_MOCK);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const fetchGeneralStatus = useCallback(() => {
-    const now = new Date();
-    const oneWeekBack = add(now, { weeks: -1 });
-
     fetch(
-      `/api/services/summary?startDate=${oneWeekBack.toISOString()}&endDate=${now.toISOString()}`
+      `${
+        import.meta.env.VITE_DEV_API_URL ?? ""
+      }/api/services/summary?startDate=${startDate}&endDate=${endDate}`
     ).then((response) => {
       response.json().then((data) => {
         setGeneralStatus(data);
       });
     });
-  }, []);
+  }, [startDate, endDate]);
 
   useEffect(() => {
     solveColorScheme(() => {
       setDarkMode(true);
     });
+  }, []);
+
+  useEffect(() => {
     fetchGeneralStatus();
   }, [fetchGeneralStatus]);
 
@@ -73,6 +76,10 @@ export const GlobalContextProvider = (props: GlobalContextoProviderProps) => {
         isDarkMode,
         setDarkMode,
         incidents,
+        startDate,
+        setStartDate: (date: Date) => setStartDate(date),
+        endDate,
+        setEndDate: (date: Date) => setEndDate(date),
       }}
     >
       {props.children}

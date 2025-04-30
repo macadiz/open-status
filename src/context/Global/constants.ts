@@ -1,3 +1,4 @@
+import { add } from "date-fns";
 import { GeneralStatus, GlobalContextState, Incident } from "./types";
 
 export const STATUS_DATA = {
@@ -43,9 +44,16 @@ export const INCIDENTS_MOCK: Incident[] = [
   },
 ];
 
+const NOW = new Date();
+const ONE_WEEK_BACK = add(NOW, { weeks: -1 });
+
 export const DEFAULT_GLOBAL_STATE: GlobalContextState = {
   generalStatus: STATUS_MOCK,
   isDarkMode: false,
   setDarkMode: () => {},
   incidents: INCIDENTS_MOCK,
+  startDate: ONE_WEEK_BACK,
+  setStartDate: () => {},
+  endDate: NOW,
+  setEndDate: () => {},
 };

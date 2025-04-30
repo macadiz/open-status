@@ -16,7 +16,7 @@ export const IncidentsScene = () => {
       <ul className="mt-4 flex flex-col gap-2">
         {incidents.map((incident) => {
           return (
-            <li>
+            <li key={incident.title}>
               <Card>
                 <div className="flex flex-col">
                   <span className="flex gap-2 items-center">

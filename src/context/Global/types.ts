@@ -36,6 +36,10 @@ export type GlobalContextState = {
   incidents: Incident[];
   isDarkMode: boolean;
   setDarkMode: (on: boolean) => void;
+  startDate: Date;
+  setStartDate: (date: Date) => void;
+  endDate: Date;
+  setEndDate: (date: Date) => void;
 };
 
 export type GlobalContextoProviderProps = PropsWithChildren;

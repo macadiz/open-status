@@ -4,7 +4,9 @@ import { StatusTag } from "../../shared/status-tag";
 import { Switch } from "../../shared/switch";
 
 export const GlobalLayout = (props: PropsWithChildren) => {
-  const { generalStatus, isDarkMode, setDarkMode } = useGlobal();
+  const { generalStatus, isDarkMode, setDarkMode, startDate, endDate } =
+    useGlobal();
+
   return (
     <>
       <header className="h-16 border-b border-b-gray-300 p-4 flex items-center w-full">
